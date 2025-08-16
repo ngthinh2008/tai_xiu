@@ -5,6 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game Tài Xỉu</title>
     <style>
+        /* Giao diện mặc định cho máy tính */
+        body {
+            font-size: 18px;
+            padding: 20px;
+        }
+
+        /* Khi màn hình nhỏ hơn 768px (điện thoại) */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px; /* 👈 Thu nhỏ chữ */
+                padding: 10px;
+            }
+
+            .popup {
+                max-width: 90%;
+                padding: 16px;
+                font-size: 14px;
+            }
+
+            .logo {
+                font-size: 32px;
+                top: 5px;
+                left: 5px;
+            }
+
+            .balance {
+                font-size: 16px;
+                padding: 6px 12px;
+                bottom: 5px;
+                left: 5px;
+            }
+
+            .bet-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+        .logo-rainbow {
+            padding: 12px 24px; /* Khoảng cách giữa chữ và khung */
+            border: 3px solid #ffffff; /* Viền trắng, bạn có thể đổi màu */
+            border-radius: 12px; /* 👈 Bo góc */
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.5); /* 👈 Hiệu ứng phát sáng nhẹ */
+        }
+        .logo-rainbow {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 30px;
+            font-weight: bold;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowShift 6s ease infinite;
+            z-index: 999;
+        }
+
+        @keyframes rainbowShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
         @media screen and (orientation: portrait) {
             body::before {
                 content: "Vui lòng xoay ngang màn hình 📱";
@@ -326,6 +397,10 @@
     </style>
 </head>
 <body>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <div class="logo-rainbow">T13.WIN</div><a></a>
     <!-- Nút X để đóng -->
     <button class="close-btn" onclick="dongGiaoDienNap()">✖</button>
     <!-- Nút Nạp tiền -->
@@ -348,6 +423,7 @@
                 Chào mừng bạn đến với trang web cá cược tài xỉu uy tín hàng đầu CÀ MAU !
             </p><h2> HƯỚNG DẪN </h2>
             <p></p>CÁCH CHƠI RẤT ĐƠN GIẢN PHIÊN GAME CÓ 15S ĐỂ CHỌN BÊN CƯỢC, CHỌN SỐ TIỀN CƯỢC  VÀ ĐẶT CƯỢC BẤM VÀO SỐ TIỀN NẾU MUỐN ĐẶT THÊM. NẾU BẠN THẮNG SẼ ĐƯỢC X2 TIỀN NẾU THUA BẠN SẼ MẤT TIỀN CƯỢC.
+            <p></p>LƯU Ý ĐÂY CHỈ LÀ TRÒ CHƠI MÔ PHỎNG KHÔNG KHUYẾN KHÍCH THAM GIA CỜ BẠC THẬT
         </div>
     </div>
     <div class="game-box">
@@ -392,315 +468,339 @@
 
     <div class="balance" id="balance">💰 Số dư: 1.000.000.000 VNĐ</div>
     <script>
-        function dongGiaoDienNap() {
-            document.getElementById("formNap").style.display = "none";
-            document.querySelector(".nap-tien-btn").style.display = "block";
-        }
-                function hienGiaoDienNap() {
-                    // Ẩn nút nạp tiền
-                    document.querySelector(".nap-tien-btn").style.display = "none";
+                        function generateControlledDice(playerChoice) {
+                            const winRate = 0.25; // tỷ lệ thắng 25%
+                            const isWin = Math.random() < winRate;
 
-                    // Hiện giao diện nạp tiền
-                    document.getElementById("formNap").style.display = "block";
+                            let dice = [0, 0, 0];
+                            let total = 0;
 
-                    // Xóa lịch sử phiên nếu có
-                    const historyTable = document.getElementById("history");
-                    if (historyTable) {
-                        historyTable.parentElement.remove();
-                    }
-                }
+                            do {
+                                dice[0] = Math.floor(Math.random() * 6) + 1;
+                                dice[1] = Math.floor(Math.random() * 6) + 1;
+                                dice[2] = Math.floor(Math.random() * 6) + 1;
+                                total = dice[0] + dice[1] + dice[2];
+                            } while (
+                                (isWin && ((playerChoice === 'tai' && total < 11) || (playerChoice === 'xiu' && total > 10))) ||
+                                (!isWin && ((playerChoice === 'tai' && total >= 11) || (playerChoice === 'xiu' && total <= 10)))
+                            );
 
-                function xacNhanNap() {
-                    alert("Nạp tiền thành công!");
-                    // Bạn có thể thêm xử lý gửi dữ liệu ở đây
-                }
-
-                          let selectedSide = null;
-                          let selectedAmount = 0;
-                          let balance = 1000000000;
-                        let countdownInterval;
-
-                        function closePopup() {
-                            document.getElementById('popup').style.display = 'none';
+                            return {
+                                dice,
+                                total,
+                                result: total >= 11 ? 'tai' : 'xiu',
+                                isWin
+                            };
                         }
+                        function dongGiaoDienNap() {
+                            document.getElementById("formNap").style.display = "none";
+                            document.querySelector(".nap-tien-btn").style.display = "block";
+                        }
+                                function hienGiaoDienNap() {
+                                    // Ẩn nút nạp tiền
+                                    document.querySelector(".nap-tien-btn").style.display = "none";
 
-                        window.onload = function () {
-                            document.getElementById('popup').style.display = 'flex';
-                        };
+                                    // Hiện giao diện nạp tiền
+                                    document.getElementById("formNap").style.display = "block";
 
-                          function updateBalanceDisplay() {
-                            document.getElementById("balance").textContent = `💰 Số dư: ${balance.toLocaleString()} VNĐ`;
-                          }
-
-                          function updateBetInfo() {
-                            document.getElementById("betTaiInfo").textContent =
-                              selectedSide === "TÀI" && selectedAmount > 0
-                                ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
-                                : "";
-                            document.getElementById("betXiuInfo").textContent =
-                              selectedSide === "XỈU" && selectedAmount > 0
-                                ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
-                                : "";
-                          }
-
-                          function rollDice() {
-                            return Math.floor(Math.random() * 6) + 1;
-                          }
-
-                          function getEmoji(val) {
-                            return ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][val - 1];
-                          }
-
-                          function startCountdown() {
-                            const lid = document.getElementById("lid");
-                            const countdown = document.getElementById("countdown");
-                            const result = document.getElementById("result");
-
-                            let timeLeft = 15;
-                            lid.classList.remove("open");
-                            result.textContent = "";
-                            countdown.textContent = `⏳ Đếm ngược: ${timeLeft} giây`;
-
-                            if (countdownInterval) clearInterval(countdownInterval);
-
-                            countdownInterval = setInterval(() => {
-                              timeLeft--;
-                              countdown.textContent = `⏳ Đếm ngược: ${timeLeft} giây`;
-                              if (timeLeft <= 0) {
-                                clearInterval(countdownInterval);
-                                lid.classList.add("open");
-
-                                const d1 = rollDice();
-                                const d2 = rollDice();
-                                const d3 = rollDice();
-                                const total = d1 + d2 + d3;
-                                const type = total >= 11 ? "TÀI" : "XỈU";
-
-                                document.getElementById("dice1").textContent = getEmoji(d1);
-                                document.getElementById("dice2").textContent = getEmoji(d2);
-                                document.getElementById("dice3").textContent = getEmoji(d3);
-
-                                result.textContent = `🎯 Tổng: ${total} → ${type}`;
-
-                                // Xử lý cược
-                                if (selectedSide && selectedAmount > 0) {
-                                  if (selectedSide === type) {
-                                    const winAmount = selectedAmount * 2;
-                                    balance += winAmount;
-                                    result.textContent += ` ✅ Thắng +${winAmount.toLocaleString()} VNĐ`;
-                                  } else {
-                                    result.textContent += ` ❌ Thua -${selectedAmount.toLocaleString()} VNĐ`;
-                                  }
-                                } else {
-                                  result.textContent += ` ⚠️ Không đặt cược`;
+                                    // Xóa lịch sử phiên nếu có
+                                    const historyTable = document.getElementById("history");
+                                    if (historyTable) {
+                                        historyTable.parentElement.remove();
+                                    }
                                 }
 
-                                updateBalanceDisplay();
-
-                                // Reset
-                                selectedSide = null;
-                                selectedAmount = 0;
-                                document.querySelectorAll(".option-box").forEach(btn => btn.classList.remove("selected"));
-                                document.querySelectorAll(".bet-button").forEach(btn => btn.classList.remove("selected"));
-                                document.getElementById("betTaiInfo").textContent = "";
-                                document.getElementById("betXiuInfo").textContent = "";
-
-                                setTimeout(startCountdown, 5000);
-                              }
-                            }, 1000);
-                          }
-
-                          window.onload = () => {
-                            updateBalanceDisplay();
-
-                            // Chọn bên cược
-                            const optionBoxes = document.querySelectorAll(".option-box");
-                            optionBoxes[0].onclick = () => {
-                              selectedSide = "TÀI";
-                              optionBoxes.forEach(btn => btn.classList.remove("selected"));
-                              optionBoxes[0].classList.add("selected");
-                              updateBetInfo();
-                            };
-                            optionBoxes[1].onclick = () => {
-                              selectedSide = "XỈU";
-                              optionBoxes.forEach(btn => btn.classList.remove("selected"));
-                              optionBoxes[1].classList.add("selected");
-                              updateBetInfo();
-                            };
-
-                            // Chọn mức cược (cộng dồn)
-                            const betValues = [1000, 10000, 50000, 200000, 500000, 1000000, 10000000, 50000000, 100000000];
-                            const betButtons = document.querySelectorAll(".bet-button");
-                            betButtons.forEach((btn, index) => {
-                              btn.onclick = () => {
-                                const amount = betValues[index];
-                                if (balance >= amount) {
-                                  selectedAmount += amount;
-                                  balance -= amount;
-                                  updateBalanceDisplay();
-                                  updateBetInfo();
-                                  btn.classList.add("selected");
-                                } else {
-                                  alert("❌ Rất tiết số dư của quý khách không đủ để vào phiên !");
+                                function xacNhanNap() {
+                                    alert("Nạp tiền thành công!");
+                                    // Bạn có thể thêm xử lý gửi dữ liệu ở đây
                                 }
-                              };
-                            });
 
-                            startCountdown();
-                          };
+                                          let selectedSide = null;
+                                          let selectedAmount = 0;
+                                          let balance = 1000000000;
+                                        let countdownInterval;
+
+                                        function closePopup() {
+                                            document.getElementById('popup').style.display = 'none';
+                                        }
+
+                                        window.onload = function () {
+                                            document.getElementById('popup').style.display = 'flex';
+                                        };
+
+                                          function updateBalanceDisplay() {
+                                            document.getElementById("balance").textContent = `💰 Số dư: ${balance.toLocaleString()} VNĐ`;
+                                          }
+
+                                          function updateBetInfo() {
+                                            document.getElementById("betTaiInfo").textContent =
+                                              selectedSide === "TÀI" && selectedAmount > 0
+                                                ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
+                                                : "";
+                                            document.getElementById("betXiuInfo").textContent =
+                                              selectedSide === "XỈU" && selectedAmount > 0
+                                                ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
+                                                : "";
+                                          }
+
+                                          function rollDice() {
+                                            return Math.floor(Math.random() * 6) + 1;
+                                          }
+
+                                          function getEmoji(val) {
+                                            return ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][val - 1];
+                                          }
+
+                                          function startCountdown() {
+                                            const lid = document.getElementById("lid");
+                                            const countdown = document.getElementById("countdown");
+                                            const result = document.getElementById("result");
+
+                                            let timeLeft = 15;
+                                            lid.classList.remove("open");
+                                            result.textContent = "";
+                                            countdown.textContent = `⏳ Đếm ngược: ${timeLeft} giây`;
+
+                                            if (countdownInterval) clearInterval(countdownInterval);
+
+                                            countdownInterval = setInterval(() => {
+                                              timeLeft--;
+                                              countdown.textContent = `⏳ Đếm ngược: ${timeLeft} giây`;
+                                              if (timeLeft <= 0) {
+                                                clearInterval(countdownInterval);
+                                                lid.classList.add("open");
+
+                                                const d1 = rollDice();
+                                                const d2 = rollDice();
+                                                const d3 = rollDice();
+                                                const total = d1 + d2 + d3;
+                                                const type = total >= 11 ? "TÀI" : "XỈU";
+
+                                                document.getElementById("dice1").textContent = getEmoji(d1);
+                                                document.getElementById("dice2").textContent = getEmoji(d2);
+                                                document.getElementById("dice3").textContent = getEmoji(d3);
+
+                                                result.textContent = `🎯 Tổng: ${total} → ${type}`;
+
+                                                // Xử lý cược
+                                                if (selectedSide && selectedAmount > 0) {
+                                                  if (selectedSide === type) {
+                                                    const winAmount = selectedAmount * 2;
+                                                    balance += winAmount;
+                                                    result.textContent += ` ✅ Thắng +${winAmount.toLocaleString()} VNĐ`;
+                                                  } else {
+                                                    result.textContent += ` ❌ Thua -${selectedAmount.toLocaleString()} VNĐ`;
+                                                  }
+                                                } else {
+                                                  result.textContent += ` ⚠️ Không đặt cược`;
+                                                }
+
+                                                updateBalanceDisplay();
+
+                                                // Reset
+                                                selectedSide = null;
+                                                selectedAmount = 0;
+                                                document.querySelectorAll(".option-box").forEach(btn => btn.classList.remove("selected"));
+                                                document.querySelectorAll(".bet-button").forEach(btn => btn.classList.remove("selected"));
+                                                document.getElementById("betTaiInfo").textContent = "";
+                                                document.getElementById("betXiuInfo").textContent = "";
+
+                                                setTimeout(startCountdown, 5000);
+                                              }
+                                            }, 1000);
+                                          }
+
+                                          window.onload = () => {
+                                            updateBalanceDisplay();
+
+                                            // Chọn bên cược
+                                            const optionBoxes = document.querySelectorAll(".option-box");
+                                            optionBoxes[0].onclick = () => {
+                                              selectedSide = "TÀI";
+                                              optionBoxes.forEach(btn => btn.classList.remove("selected"));
+                                              optionBoxes[0].classList.add("selected");
+                                              updateBetInfo();
+                                            };
+                                            optionBoxes[1].onclick = () => {
+                                              selectedSide = "XỈU";
+                                              optionBoxes.forEach(btn => btn.classList.remove("selected"));
+                                              optionBoxes[1].classList.add("selected");
+                                              updateBetInfo();
+                                            };
+
+                                            // Chọn mức cược (cộng dồn)
+                                            const betValues = [1000, 10000, 50000, 200000, 500000, 1000000, 10000000, 50000000, 100000000];
+                                            const betButtons = document.querySelectorAll(".bet-button");
+                                            betButtons.forEach((btn, index) => {
+                                              btn.onclick = () => {
+                                                const amount = betValues[index];
+                                                if (balance >= amount) {
+                                                  selectedAmount += amount;
+                                                  balance -= amount;
+                                                  updateBalanceDisplay();
+                                                  updateBetInfo();
+                                                  btn.classList.add("selected");
+                                                } else {
+                                                  alert("❌ Rất tiết số dư của quý khách không đủ để vào phiên !");
+                                                }
+                                              };
+                                            });
+
+                                            startCountdown();
+                                          };
     </script>
     <script>
-                                let selectedSide = null;
-                                let selectedAmount = 0;
-                                let balance = 1000000000;
-                                let countdownInterval;
+                                                let selectedSide = null;
+                                                let selectedAmount = 0;
+                                                let balance = 1000000000;
+                                                let countdownInterval;
 
-                                function updateBalanceDisplay() {
-                                    document.getElementById("balance").textContent = `💰 Số dư: ${balance.toLocaleString()} VNĐ`;
-                                }
+                                                function updateBalanceDisplay() {
+                                                    document.getElementById("balance").textContent = `💰 Số dư: ${balance.toLocaleString()} VNĐ`;
+                                                }
 
-                                function updateBetInfo() {
-                                    document.getElementById("betTaiInfo").textContent =
-                                        selectedSide === "TÀI" && selectedAmount > 0
-                                            ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
-                                            : "";
-                                    document.getElementById("betXiuInfo").textContent =
-                                        selectedSide === "XỈU" && selectedAmount > 0
-                                            ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
-                                            : "";
-                                }
+                                                function updateBetInfo() {
+                                                    document.getElementById("betTaiInfo").textContent =
+                                                        selectedSide === "TÀI" && selectedAmount > 0
+                                                            ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
+                                                            : "";
+                                                    document.getElementById("betXiuInfo").textContent =
+                                                        selectedSide === "XỈU" && selectedAmount > 0
+                                                            ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
+                                                            : "";
+                                                }
 
-                                function rollDice() {
-                                    return Math.floor(Math.random() * 6) + 1;
-                                }
+                                                function rollDice() {
+                                                    return Math.floor(Math.random() * 6) + 1;
+                                                }
 
-                                function getEmoji(val) {
-                                    return ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][val - 1];
-                                    <script>
+                                                function getEmoji(val) {
+                                                    return ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][val - 1];
+                                                    <script>
 
-                          let selectedSide = null;
-                          let selectedAmount = 0;
-                          let balance = 1000000000;
-                          let countdownInterval;
+                                          let selectedSide = null;
+                                          let selectedAmount = 0;
+                                          let balance = 1000000000;
+                                          let countdownInterval;
 
-                          function updateBalanceDisplay() {
-                            document.getElementById("balance").textContent = `💰 Số dư: ${balance.toLocaleString()} VNĐ`;
-                          }
+                                          function updateBalanceDisplay() {
+                                            document.getElementById("balance").textContent = `💰 Số dư: ${balance.toLocaleString()} VNĐ`;
+                                          }
 
-                          function updateBetInfo() {
-                            document.getElementById("betTaiInfo").textContent =
-                              selectedSide === "TÀI" && selectedAmount > 0
-                                ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
-                                : "";
-                            document.getElementById("betXiuInfo").textContent =
-                              selectedSide === "XỈU" && selectedAmount > 0
-                                ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
-                                : "";
-                          }
+                                          function updateBetInfo() {
+                                            document.getElementById("betTaiInfo").textContent =
+                                              selectedSide === "TÀI" && selectedAmount > 0
+                                                ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
+                                                : "";
+                                            document.getElementById("betXiuInfo").textContent =
+                                              selectedSide === "XỈU" && selectedAmount > 0
+                                                ? `💰 Đặt: ${selectedAmount.toLocaleString()} VNĐ`
+                                                : "";
+                                          }
 
-                          function rollDice() {
-                            return Math.floor(Math.random() * 6) + 1;
-                          }
+                                          function rollDice() {
+                                            return Math.floor(Math.random() * 6) + 1;
+                                          }
 
-                          function getEmoji(val) {
-                            return ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][val - 1];
-                          }
+                                          function getEmoji(val) {
+                                            return ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][val - 1];
+                                          }
 
-                          function startCountdown() {
-                            const lid = document.getElementById("lid");
-                            const countdown = document.getElementById("countdown");
-                            const result = document.getElementById("result");
+                                          function startCountdown() {
+                                            const lid = document.getElementById("lid");
+                                            const countdown = document.getElementById("countdown");
+                                            const result = document.getElementById("result");
 
-                            let timeLeft = 15;
-                            lid.classList.remove("open");
-                            result.textContent = "";
-                            countdown.textContent = `⏳ Đếm ngược: ${timeLeft} giây`;
+                                            let timeLeft = 15;
+                                            lid.classList.remove("open");
+                                            result.textContent = "";
+                                            countdown.textContent = `⏳ Đếm ngược: ${timeLeft} giây`;
 
-                            if (countdownInterval) clearInterval(countdownInterval);
+                                            if (countdownInterval) clearInterval(countdownInterval);
 
-                            countdownInterval = setInterval(() => {
-                              timeLeft--;
-                              countdown.textContent = `⏳ Đếm ngược: ${timeLeft} giây`;
-                              if (timeLeft <= 0) {
-                                clearInterval(countdownInterval);
-                                lid.classList.add("open");
+                                            countdownInterval = setInterval(() => {
+                                              timeLeft--;
+                                              countdown.textContent = `⏳ Đếm ngược: ${timeLeft} giây`;
+                                              if (timeLeft <= 0) {
+                                                clearInterval(countdownInterval);
+                                                lid.classList.add("open");
 
-                                const d1 = rollDice();
-                                const d2 = rollDice();
-                                const d3 = rollDice();
-                                const total = d1 + d2 + d3;
-                                const type = total >= 11 ? "TÀI" : "XỈU";
+                                                const d1 = rollDice();
+                                                const d2 = rollDice();
+                                                const d3 = rollDice();
+                                                const total = d1 + d2 + d3;
+                                                const type = total >= 11 ? "TÀI" : "XỈU";
 
-                                document.getElementById("dice1").textContent = getEmoji(d1);
-                                document.getElementById("dice2").textContent = getEmoji(d2);
-                                document.getElementById("dice3").textContent = getEmoji(d3);
+                                                document.getElementById("dice1").textContent = getEmoji(d1);
+                                                document.getElementById("dice2").textContent = getEmoji(d2);
+                                                document.getElementById("dice3").textContent = getEmoji(d3);
 
-                                result.textContent = `🎯 Tổng: ${total} → ${type}`;
+                                                result.textContent = `🎯 Tổng: ${total} → ${type}`;
 
-                                // Xử lý cược
-                                if (selectedSide && selectedAmount > 0) {
-                                  if (selectedSide === type) {
-                                    const winAmount = selectedAmount * 2;
-                                    balance += winAmount;
-                                    result.textContent += ` ✅ Thắng +${winAmount.toLocaleString()} VNĐ`;
-                                  } else {
-                                    result.textContent += ` ❌ Thua -${selectedAmount.toLocaleString()} VNĐ`;
-                                  }
-                                } else {
-                                  result.textContent += ` ⚠️ Không đặt cược`;
-                                }
+                                                // Xử lý cược
+                                                if (selectedSide && selectedAmount > 0) {
+                                                  if (selectedSide === type) {
+                                                    const winAmount = selectedAmount * 2;
+                                                    balance += winAmount;
+                                                    result.textContent += ` ✅ Thắng +${winAmount.toLocaleString()} VNĐ`;
+                                                  } else {
+                                                    result.textContent += ` ❌ Thua -${selectedAmount.toLocaleString()} VNĐ`;
+                                                  }
+                                                } else {
+                                                  result.textContent += ` ⚠️ Không đặt cược`;
+                                                }
 
-                                updateBalanceDisplay();
+                                                updateBalanceDisplay();
 
-                                // Reset
-                                selectedSide = null;
-                                selectedAmount = 0;
-                                document.querySelectorAll(".option-box").forEach(btn => btn.classList.remove("selected"));
-                                document.querySelectorAll(".bet-button").forEach(btn => btn.classList.remove("selected"));
-                                document.getElementById("betTaiInfo").textContent = "";
-                                document.getElementById("betXiuInfo").textContent = "";
+                                                // Reset
+                                                selectedSide = null;
+                                                selectedAmount = 0;
+                                                document.querySelectorAll(".option-box").forEach(btn => btn.classList.remove("selected"));
+                                                document.querySelectorAll(".bet-button").forEach(btn => btn.classList.remove("selected"));
+                                                document.getElementById("betTaiInfo").textContent = "";
+                                                document.getElementById("betXiuInfo").textContent = "";
 
-                                setTimeout(startCountdown, 5000);
-                              }
-                            }, 1000);
-                          }
+                                                setTimeout(startCountdown, 5000);
+                                              }
+                                            }, 1000);
+                                          }
 
-                          window.onload = () => {
-                            updateBalanceDisplay();
+                                          window.onload = () => {
+                                            updateBalanceDisplay();
 
-                            // Chọn bên cược
-                            const optionBoxes = document.querySelectorAll(".option-box");
-                            optionBoxes[0].onclick = () => {
-                              selectedSide = "TÀI";
-                              optionBoxes.forEach(btn => btn.classList.remove("selected"));
-                              optionBoxes[0].classList.add("selected");
-                              updateBetInfo();
-                            };
-                            optionBoxes[1].onclick = () => {
-                              selectedSide = "XỈU";
-                              optionBoxes.forEach(btn => btn.classList.remove("selected"));
-                              optionBoxes[1].classList.add("selected");
-                              updateBetInfo();
-                            };
+                                            // Chọn bên cược
+                                            const optionBoxes = document.querySelectorAll(".option-box");
+                                            optionBoxes[0].onclick = () => {
+                                              selectedSide = "TÀI";
+                                              optionBoxes.forEach(btn => btn.classList.remove("selected"));
+                                              optionBoxes[0].classList.add("selected");
+                                              updateBetInfo();
+                                            };
+                                            optionBoxes[1].onclick = () => {
+                                              selectedSide = "XỈU";
+                                              optionBoxes.forEach(btn => btn.classList.remove("selected"));
+                                              optionBoxes[1].classList.add("selected");
+                                              updateBetInfo();
+                                            };
 
-                            // Chọn mức cược (cộng dồn)
-                            const betValues = [1000, 10000, 50000, 200000, 500000, 1000000, 10000000, 50000000, 100000000];
-                            const betButtons = document.querySelectorAll(".bet-button");
-                            betButtons.forEach((btn, index) => {
-                              btn.onclick = () => {
-                                const amount = betValues[index];
-                                if (balance >= amount) {
-                                  selectedAmount += amount;
-                                  balance -= amount;
-                                  updateBalanceDisplay();
-                                  updateBetInfo();
-                                  btn.classList.add("selected");
-                                } else {
-                                  alert("❌ Không đủ tiền để đặt thêm cược!");
-                                }
-                              };
-                            });
+                                            // Chọn mức cược (cộng dồn)
+                                            const betValues = [1000, 10000, 50000, 200000, 500000, 1000000, 10000000, 50000000, 100000000];
+                                            const betButtons = document.querySelectorAll(".bet-button");
+                                            betButtons.forEach((btn, index) => {
+                                              btn.onclick = () => {
+                                                const amount = betValues[index];
+                                                if (balance >= amount) {
+                                                  selectedAmount += amount;
+                                                  balance -= amount;
+                                                  updateBalanceDisplay();
+                                                  updateBetInfo();
+                                                  btn.classList.add("selected");
+                                                } else {
+                                                  alert("❌ Không đủ tiền để đặt thêm cược!");
+                                                }
+                                              };
+                                            });
 
-                            startCountdown();
-                          };
+                                            startCountdown();
+                                          };
     </script>
