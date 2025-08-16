@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game Tài Xỉu</title>
     <style>
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .bet-options {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .bet-button {
+                width: 90%;
+                margin: 8px auto;
+                font-size: 0.9rem;
+            }
+
+            .dice-display {
+                font-size: 1.2rem;
+            }
+
+            .balance, .deposit-button {
+                font-size: 0.9rem;
+                padding: 6px 12px;
+            }
+        }
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
         /* Giao diện mặc định cho máy tính */
         body {
             font-size: 18px;
@@ -12,7 +43,7 @@
         }
 
         /* Khi màn hình nhỏ hơn 768px (điện thoại) */
-        @media (max-width: 1068px) {
+        @media (max-width: 768px) {
             body {
                 font-size: 14px; /* 👈 Thu nhỏ chữ */
                 padding: 10px;
