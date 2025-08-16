@@ -1,40 +1,150 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game Tài Xỉu</title>
     <style>
+        .game-box {
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 05px;
+            font-size: 10px;
+            transform: scale(0.9); /* Thu nhỏ toàn bộ khung game */
+        }
+
+        .bet-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .bet-button {
+            font-size: 12px;
+            padding: 6px 10px;
+        }
+
+        .dice-area {
+            width: 120px;
+            height: 120px;
+            font-size: 32px;
+        }
+
+        .dice {
+            font-size: 32px;
+            margin: 0 3px;
+        }
+
+        .label-box {
+            font-size: 16px;
+            padding: 6px;
+        }
+
+        .option-box {
+            font-size: 14px;
+            padding: 6px;
+        }
+
+        .countdown {
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .result {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .balance {
+            font-size: 14px;
+            margin-top: 12px;
+        }
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                align-items: center;
+            .logo-rainbow {
+                font-size: 32px;
+                padding: 8px 16px;
+            }
+
+            .game-box {
+                width: 95%;
+                padding: 16px;
+                gap: 16px;
             }
 
             .bet-options {
-                display: flex;
                 flex-direction: column;
+                gap: 16px;
+            }
+
+            .option-container {
                 width: 100%;
             }
 
+            .label-box {
+                width: 60px;
+                height: 60px;
+                font-size: 18px;
+            }
+
+            .option-box {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .dice-area {
+                width: 140px;
+                height: 140px;
+                font-size: 36px;
+            }
+
+            .dice {
+                font-size: 36px;
+                margin: 0 4px;
+            }
+
+            .bet-buttons {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
             .bet-button {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            .countdown {
+                font-size: 16px;
+            }
+
+            .result {
+                font-size: 18px;
+            }
+
+            .balance {
+                font-size: 14px;
+                padding: 6px 10px;
+            }
+
+            .form-nap {
                 width: 90%;
-                margin: 8px auto;
-                font-size: 0.9rem;
+                padding: 16px;
+                font-size: 14px;
             }
 
-            .dice-display {
-                font-size: 1.2rem;
+            .popup-content {
+                width: 90%;
+                padding: 16px;
+                font-size: 14px;
             }
 
-            .balance, .deposit-button {
-                font-size: 0.9rem;
-                padding: 6px 12px;
+            .close-btn {
+                font-size: 20px;
+                top: 8px;
+                right: 12px;
             }
-        }
-        html {
-            -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
         }
         /* Giao diện mặc định cho máy tính */
         body {
@@ -226,7 +336,7 @@
         .popup-content {
             background: #fff;
             color: #000;
-            padding: 30px;
+            padding: 10px;
             border-radius: 10px;
             position: relative;
             width: 400px;
